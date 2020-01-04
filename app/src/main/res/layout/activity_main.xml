@@ -5,23 +5,28 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:orientation="horizontal">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addText"
-        android:id="@+id/btnAdd"
-        tools:ignore="ButtonStyle" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clearText"
-        android:id="@+id/btnClear"
-        tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addText"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clearText"
+            tools:ignore="ButtonStyle" />
+
     </LinearLayout>
+
     <ListView
         android:id="@+id/lvMain"
         android:layout_width="match_parent"

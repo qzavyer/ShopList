@@ -2,38 +2,60 @@ package com.example.qzavyer.shoplist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+
+import com.example.qzavyer.shoplist.Models.ShopItem;
+import com.example.qzavyer.shoplist.Service.GoodService;
+import com.example.qzavyer.shoplist.Service.ShopItemService;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnAdd, btnClear;
     ListView lvSimple;
-
-    DBHelper dbHelper;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = this;
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
 
         btnClear = findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
 
-        dbHelper = new DBHelper(this);
+        lvSimple = findViewById(R.id.lvMain);
+
+        lvSimple.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView v = (ListView) parent;
+
+                boolean a = v.isItemChecked(position);
+
+                CheckBox box = view.findViewById(R.id.cbChecked);
+                boolean checked = box.isChecked();
+                ShopItemService service = new ShopItemService(context);
+
+                service.setChecked((int) id, checked);
+            }
+        });
     }
 
     @Override
@@ -46,77 +68,92 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        db.delete(getString(R.string.listTable), null, null);
-
-        // закрываем подключение к БД
-        dbHelper.close();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnAdd:
                 Intent intent = new Intent(this, AddActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btnClear:
-                // подключаемся к БД
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ShopItemService repository = new ShopItemService(this);
 
-                db.delete(getString(R.string.listTable), null, null);
-                // закрываем подключение к БД
-                dbHelper.close();
+                repository.deleteAll();
 
                 fillList();
                 break;
         }
     }
 
-    private void fillList(){
-        // упаковываем данные в понятную для адаптера структуру
-        ArrayList<Map<String, Object>> data = new ArrayList<>();
+    private void fillList() {
+        ShopItemService service = new ShopItemService(this);
 
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // делаем запрос всех данных из таблицы list, получаем Cursor
-        Cursor c = db.query(getString(R.string.listTable), null, null, null, null, null, null);
-
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
-        if (c.moveToFirst()) {
-
-            // определяем номера столбцов по имени в выборке
-            int nameColIndex = c.getColumnIndex("name");
-
-            Map<String, Object> m;
-
-            do {
-                m = new HashMap<>();
-                m.put("name", c.getString(nameColIndex));
-                data.add(m);
-            } while (c.moveToNext());
-        }
-
-        c.close();
-
-        // закрываем подключение к БД
-        dbHelper.close();
-
-        // массив имен атрибутов, из которых будут читаться данные
-        String[] from = { "name" };
-
-        // массив ID View-компонентов, в которые будут вставлять данные
-        int[] to = { R.id.cbChecked };
+        ArrayList<ShopItem> items = service.all();
 
         // создаем адаптер
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.list_item, from, to);
+        MyCustomAdapter sAdapter = new MyCustomAdapter(this, R.layout.list_item, items);
 
         // определяем список и присваиваем ему адаптер
-        lvSimple = findViewById(R.id.lvMain);
         lvSimple.setAdapter(sAdapter);
+    }
+
+
+    class MyCustomAdapter extends ArrayAdapter<ShopItem> {
+        private ArrayList<ShopItem> stateList;
+        Context context;
+
+        MyCustomAdapter(Context context, int textViewResourceId, ArrayList<ShopItem> stateList) {
+            super(context, textViewResourceId, stateList);
+            this.stateList = new ArrayList<>();
+            this.stateList.addAll(stateList);
+            this.context = context;
+        }
+
+        private class ViewHolder {
+            CheckBox cbChecked;
+        }
+
+        @SuppressLint("InflateParams")
+        @NotNull
+        @Override
+        public View getView(int position, View convertView, @NotNull ViewGroup parent) {
+            ViewHolder holder;
+
+            if (convertView == null) {
+
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                convertView = vi.inflate(R.layout.list_item, null);
+
+                holder = new ViewHolder();
+                holder.cbChecked = convertView.findViewById(R.id.cbChecked);
+
+                convertView.setTag(holder);
+
+                holder.cbChecked.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v;
+                        int id = (int)cb.getTag();
+                        boolean ch = cb.isChecked();
+
+                        ShopItemService service = new ShopItemService(context);
+                        service.setChecked(id, cb.isChecked());
+                    }
+                });
+
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            ShopItem item = stateList.get(position);
+
+            holder.cbChecked.setText(item.getName());
+            holder.cbChecked.setTag(item.getId());
+            holder.cbChecked.setChecked(item.isChecked());
+
+            return convertView;
+        }
     }
 }

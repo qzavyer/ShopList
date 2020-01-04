@@ -2,17 +2,24 @@ package com.example.qzavyer.shoplist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.qzavyer.shoplist.Models.Category;
+import com.example.qzavyer.shoplist.Models.ShopItem;
+import com.example.qzavyer.shoplist.Service.CategoryService;
+import com.example.qzavyer.shoplist.Service.GoodService;
+import com.example.qzavyer.shoplist.Service.ShopItemService;
+
+import java.util.ArrayList;
+
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnAdd;
-    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,33 +28,81 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
+
+        GoodService service = new GoodService(this);
+        ArrayList<String> goodNames  = service.getGoodNames();
+        ArrayList<String> goodUnits  = service.getUnits();
+
+        CategoryService categoryService = new CategoryService(this);
+        ArrayList<String> categoryNames = categoryService.getNames();
+
+        ArrayAdapter<String> namesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, goodNames);
+        AutoCompleteTextView editText = findViewById(R.id.editText);
+        editText.setAdapter(namesAdapter);
+
+        ArrayAdapter<String> unitsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, goodUnits);
+        AutoCompleteTextView editUnit = findViewById(R.id.editUnit);
+        editUnit.setAdapter(unitsAdapter);
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, categoryNames);
+        AutoCompleteTextView editCategory = findViewById(R.id.editCategory);
+        editCategory.setAdapter(categoryAdapter);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btnAdd) {
-            EditText editText = findViewById(R.id.editText);
+        AutoCompleteTextView editCategory;
+        AutoCompleteTextView editUnit;
+        switch (v.getId()) {
+            case R.id.btnAdd:
+                AutoCompleteTextView editText = findViewById(R.id.editText);
 
-            Editable text = editText.getText();
+                Editable text = editText.getText();
 
-            dbHelper = new DBHelper(this);
+                ShopItemService service = new ShopItemService(this);
 
-            // подключаемся к БД
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
+                editUnit = findViewById(R.id.editUnit);
+                String unit = editUnit.getText().toString();
+                if(unit.length() == 0) unit = "шт.";
 
-            // создаем объект для данных
-            ContentValues cv = new ContentValues();
+                editCategory = findViewById(R.id.editCategory);
 
-            cv.put("name", text.toString());
-            cv.put("checked", 0);
+                EditText editCount = findViewById(R.id.editCount);
+                String textCount = editCount.getText().toString();
 
-            // вставляем запись и получаем ее ID
-            db.insert(getString(R.string.listTable), null, cv);
+                double count;
 
-            // закрываем подключение к БД
-            dbHelper.close();
+                if(textCount.length() == 0){
+                    count = 1;
+                }else{
+                    count = Double.parseDouble(textCount);
+                }
 
-            finish();
+                ShopItem item = new ShopItem();
+                item.setCount(count);
+                item.setUnit(unit);
+                item.setPrice(0);
+                item.setName(text.toString());
+
+                Category category = new Category();
+                category.setName(editCategory.getText().toString());
+
+                service.add(item, category);
+
+                finish();
+                break;
+            case R.id.editText:
+                AutoCompleteTextView textView = findViewById(R.id.editText);
+                textView.showDropDown();
+                break;
+            case R.id.editCategory:
+                editCategory = findViewById(R.id.editCategory);
+                editCategory.showDropDown();
+                break;
+            case R.id.editUnit:
+                editUnit = findViewById(R.id.editUnit);
+                editUnit.showDropDown();
+                break;
         }
     }
 }
