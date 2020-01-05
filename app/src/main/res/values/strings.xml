@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ShopList</string>
+    <string name="addText">+</string>
+    <string name="clearText">Clear</string>
+    <string name="listTable">list</string>
+    <string name="name">Наименование</string>
+    <string name="empty" />
+    <string name="category">Категория</string>
+    <string name="count">Кол-во</string>
+    <string name="unit">Ед.изм.</string>
+    <string name="bye">Bye</string>
+    <string name="shop">Магазин</string>
+    <string name="price">Цена</string>
+    <string name="sum">Сумма</string>
+    <string name="save">Save</string>
+</resources>

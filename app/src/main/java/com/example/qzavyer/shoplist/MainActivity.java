@@ -16,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.example.qzavyer.shoplist.Models.ShopItem;
-import com.example.qzavyer.shoplist.Service.GoodService;
 import com.example.qzavyer.shoplist.Service.ShopItemService;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button btnAdd, btnClear;
+    Button btnAdd, btnClear, btnBye;
     ListView lvSimple;
     Context context;
 
@@ -39,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnClear = findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
+
+        btnBye = findViewById(R.id.btnBye);
+        btnBye.setOnClickListener(this);
 
         lvSimple = findViewById(R.id.lvMain);
 
@@ -84,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 fillList();
                 break;
+            case R.id.btnBye:
+                Intent byeIntent = new Intent(this, ByeActivity.class);
+                startActivity(byeIntent);
         }
     }
 
@@ -136,13 +141,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v;
                         int id = (int)cb.getTag();
-                        boolean ch = cb.isChecked();
 
                         ShopItemService service = new ShopItemService(context);
                         service.setChecked(id, cb.isChecked());
                     }
                 });
-
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }

@@ -1,4 +1,4 @@
-package com.example.qzavyer.shoplist.Service.Database;
+package com.example.qzavyer.shoplist.Service;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Репозиторий товаров
  */
-public class GoodsRepository {
+class GoodsRepository {
     /**
      * Хэлпер БД
      */
@@ -41,8 +41,10 @@ public class GoodsRepository {
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
+            String[] names = new String[]{"id", "name", "price", "unit", "categoryId"};
+
             // определяем номера столбцов по имени в выборке
-            IndexList indexList = new IndexList(c);
+            IndexList indexList = new IndexList(c, names);
 
             item = getGoodFromCursor(c, indexList);
         }
@@ -73,8 +75,10 @@ public class GoodsRepository {
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
+            String[] names = new String[]{"id", "name", "price", "unit", "categoryId"};
+
             // определяем номера столбцов по имени в выборке
-            IndexList indexList = new IndexList(c);
+            IndexList indexList = new IndexList(c, names);
 
             do {
                 Good item = getGoodFromCursor(c, indexList);
@@ -124,66 +128,13 @@ public class GoodsRepository {
      */
     private Good getGoodFromCursor(Cursor cursor, IndexList indexList) {
         Good item = new Good();
-        item.setId(cursor.getInt(indexList.getIdIndex()));
-        item.setName(cursor.getString(indexList.getNameIndex()));
-        item.setPrice(cursor.getInt(indexList.getPriceIndex()) / 100d);
-        item.setUnit(cursor.getString(indexList.getUnitIndex()));
-        item.setCategoryId(cursor.getInt(indexList.getCatIndex()));
+        item.setId(cursor.getInt(indexList.getIndex("id")));
+        item.setName(cursor.getString(indexList.getIndex("name")));
+        item.setPrice(cursor.getInt(indexList.getIndex("price")) / 100d);
+        item.setUnit(cursor.getString(indexList.getIndex("unit")));
+        item.setCategoryId(cursor.getInt(indexList.getIndex("categoryId")));
 
         return item;
     }
-
-    /**
-     * Класс индексов
-     */
-    private class IndexList {
-        /**
-         * Индекс индетификатора
-         */
-        private int idIndex;
-        /**
-         * Индекс названия
-         */
-        private int nameIndex;
-        /**
-         * Индекс цены
-         */
-        private int priceIndex;
-        /**
-         * Индекс единицы измерения
-         */
-        private int unitIndex;
-        /**
-         * Индекс категории
-         */
-        private int catIndex;
-
-        IndexList(Cursor cursor) {
-            idIndex = cursor.getColumnIndex("id");
-            nameIndex = cursor.getColumnIndex("name");
-            priceIndex = cursor.getColumnIndex("price");
-            unitIndex = cursor.getColumnIndex("unit");
-            catIndex = cursor.getColumnIndex("categoryId");
-        }
-
-        int getIdIndex() {
-            return idIndex;
-        }
-
-        int getNameIndex() {
-            return nameIndex;
-        }
-
-        int getPriceIndex() {
-            return priceIndex;
-        }
-
-        int getUnitIndex() {
-            return unitIndex;
-        }
-
-        int getCatIndex() {
-            return catIndex;
-        }
-    }
 }
+

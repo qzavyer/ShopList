@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
     <TextView
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -48,20 +49,22 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/unit" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <EditText
             android:id="@+id/editCount"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number"
-            tools:ignore="LabelFor"
-            android:importantForAutofill="no" />
+            android:inputType="numberDecimal"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
         <Space
             android:layout_width="0dp"
@@ -74,6 +77,7 @@
             android:layout_height="wrap_content"
             android:text="@string/empty"
             tools:ignore="LabelFor" />
+
     </LinearLayout>
 
     <Button
@@ -81,4 +85,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/addText" />
+
 </LinearLayout>

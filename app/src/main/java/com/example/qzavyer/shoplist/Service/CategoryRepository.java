@@ -1,4 +1,4 @@
-package com.example.qzavyer.shoplist.Service.Database;
+package com.example.qzavyer.shoplist.Service;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Репозиторий категории
  */
-public class CategoryRepository {
+class CategoryRepository {
     private DBHelper dbHelper;
 
     public CategoryRepository(Context context) {
@@ -119,3 +119,4 @@ public class CategoryRepository {
         return category;
     }
 }
+

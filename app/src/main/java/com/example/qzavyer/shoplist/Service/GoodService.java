@@ -2,7 +2,6 @@ package com.example.qzavyer.shoplist.Service;
 
 import android.content.Context;
 
-import com.example.qzavyer.shoplist.Service.Database.GoodsRepository;
 import com.example.qzavyer.shoplist.Models.Good;
 
 import java.util.ArrayList;

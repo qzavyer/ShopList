@@ -1,4 +1,4 @@
-package com.example.qzavyer.shoplist.Service.Database;
+package com.example.qzavyer.shoplist.Service;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

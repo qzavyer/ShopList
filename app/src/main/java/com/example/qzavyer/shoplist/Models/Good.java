@@ -1,5 +1,7 @@
 package com.example.qzavyer.shoplist.Models;
 
+import java.util.Date;
+
 /**
  * Модель товара
  */
@@ -68,3 +70,4 @@ public class Good {
         this.categoryId = categoryId;
     }
 }
+

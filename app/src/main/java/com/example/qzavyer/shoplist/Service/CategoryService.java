@@ -2,8 +2,8 @@ package com.example.qzavyer.shoplist.Service;
 
 import android.content.Context;
 
+import com.example.qzavyer.shoplist.Models.Bill;
 import com.example.qzavyer.shoplist.Models.Category;
-import com.example.qzavyer.shoplist.Service.Database.CategoryRepository;
 
 import java.util.ArrayList;
 
@@ -27,3 +27,4 @@ public class CategoryService {
         return names;
     }
 }
+

@@ -4,9 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.example.qzavyer.shoplist.Models.Category;
-import com.example.qzavyer.shoplist.Service.Database.CategoryRepository;
-import com.example.qzavyer.shoplist.Service.Database.GoodsRepository;
-import com.example.qzavyer.shoplist.Service.Database.ShopItemsRepository;
 import com.example.qzavyer.shoplist.Models.Good;
 import com.example.qzavyer.shoplist.Models.ShopItem;
 
@@ -73,6 +70,12 @@ public class ShopItemService {
         itemsRepository.deleteAll();
     }
 
+    public void deleteAllChecked() {
+        ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
+
+        itemsRepository.deleteAllChecked();
+    }
+
     public ArrayList<ShopItem> all() {
         ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
 
@@ -82,6 +85,12 @@ public class ShopItemService {
     public void setChecked(int id, boolean checked) {
         ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
         itemsRepository.setChecked(id, checked);
+    }
+
+    public ArrayList<ShopItem> allChecked(){
+        ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
+
+        return itemsRepository.allChecked();
     }
 
     private static String capitalizeFirstLetter(@org.jetbrains.annotations.NotNull String customText) {

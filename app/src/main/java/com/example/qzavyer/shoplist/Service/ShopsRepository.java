@@ -1,11 +1,10 @@
-package com.example.qzavyer.shoplist.Service.Database;
+package com.example.qzavyer.shoplist.Service;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.qzavyer.shoplist.Models.Category;
 import com.example.qzavyer.shoplist.Models.Shop;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Репозиторий магазина
  */
-public class ShopsRepository {
+class ShopsRepository {
     private DBHelper dbHelper;
 
     public ShopsRepository(Context context) {
@@ -32,7 +31,7 @@ public class ShopsRepository {
         String[] args = {name};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
-        Cursor c = db.query("shops", null, "name = ?", args, null, null, "name");
+        Cursor c = db.query("shop", null, "name = ?", args, null, null, "name");
 
         Shop item = null;
 
@@ -66,7 +65,7 @@ public class ShopsRepository {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "shops";
+        String table = "shop";
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, null, null, null, null, null, "name");
@@ -110,11 +109,10 @@ public class ShopsRepository {
         cv.put("name", shop.getName());
 
         // вставляем запись и получаем ее ID
-        long rowID = db.insert("shops", null, cv);
+        long rowID = db.insert("shop", null, cv);
 
         shop.setId((int) rowID);
 
         return shop;
     }
 }
-
