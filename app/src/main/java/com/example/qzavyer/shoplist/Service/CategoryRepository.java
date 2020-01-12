@@ -7,16 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.qzavyer.shoplist.Models.Category;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 /**
  * Репозиторий категории
  */
-class CategoryRepository {
-    private DBHelper dbHelper;
-
-    public CategoryRepository(Context context) {
-        dbHelper = new DBHelper(context);
+class CategoryRepository extends CommonRepository {
+    CategoryRepository(Context context) {
+        super(context);
     }
 
     /**
@@ -25,14 +25,14 @@ class CategoryRepository {
      * @param name Название категории
      * @return Данные категории
      */
-    public Category getByName(@org.jetbrains.annotations.NotNull String name) {
+    Category getByName(@org.jetbrains.annotations.NotNull String name) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String[] args = {name};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
-        Cursor c = db.query("categories", null, "name = ?", args, null, null, "name");
+        Cursor c = db.query(dbHelper.CategoriesTable, null, "name = ?", args, null, null, "name");
 
         Category item = null;
 
@@ -61,13 +61,13 @@ class CategoryRepository {
      *
      * @return Список категорий
      */
-    public ArrayList<Category> all() {
+    ArrayList<Category> all() {
         ArrayList<Category> items = new ArrayList<>();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "categories";
+        String table = dbHelper.CategoriesTable;
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, null, null, null, null, null, "name");
@@ -102,7 +102,7 @@ class CategoryRepository {
      * @param category Добавляемые данные
      * @return Добавленные данные
      */
-    public Category add(Category category) {
+    Category add(@NotNull Category category) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -119,4 +119,3 @@ class CategoryRepository {
         return category;
     }
 }
-

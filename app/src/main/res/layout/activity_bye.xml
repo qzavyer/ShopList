@@ -14,29 +14,85 @@
 
         <Button
             android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/save" />
 
         <TextView
             android:id="@+id/textSum"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:layout_weight="2"
+            android:text="@string/empty"
+            android:textAlignment="center" />
+
+        <AutoCompleteTextView
+            android:id="@+id/editCurrency"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/btnAddCurrency"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add"/>
 
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/shop" />
+        android:orientation="horizontal">
 
-    <AutoCompleteTextView
-        android:id="@+id/editShop"
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/shop" />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/date" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="LabelFor"
-        android:text="@string/empty" />
+        android:orientation="horizontal">
+
+        <AutoCompleteTextView
+            android:id="@+id/editShop"
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:ignore="LabelFor"
+            android:text="@string/empty" />
+
+        <EditText
+            android:id="@+id/editDate"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="date"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/btnAddItem"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listAdd"

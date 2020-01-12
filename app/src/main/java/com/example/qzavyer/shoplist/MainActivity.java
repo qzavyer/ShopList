@@ -14,9 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.qzavyer.shoplist.Models.Bill;
+import com.example.qzavyer.shoplist.Models.Shop;
 import com.example.qzavyer.shoplist.Models.ShopItem;
+import com.example.qzavyer.shoplist.Service.BillService;
 import com.example.qzavyer.shoplist.Service.ShopItemService;
+import com.example.qzavyer.shoplist.Service.ShopService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,10 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lvSimple.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListView v = (ListView) parent;
-
-                boolean a = v.isItemChecked(position);
-
                 CheckBox box = view.findViewById(R.id.cbChecked);
                 boolean checked = box.isChecked();
                 ShopItemService service = new ShopItemService(context);
@@ -118,9 +119,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         private class ViewHolder {
             CheckBox cbChecked;
+            TextView textPrice;
+            TextView textShop;
         }
 
-        @SuppressLint("InflateParams")
+        @SuppressLint({"InflateParams", "SetTextI18n"})
         @NotNull
         @Override
         public View getView(int position, View convertView, @NotNull ViewGroup parent) {
@@ -134,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 holder = new ViewHolder();
                 holder.cbChecked = convertView.findViewById(R.id.cbChecked);
+                holder.textPrice = convertView.findViewById(R.id.textPrice);
+                holder.textShop = convertView.findViewById(R.id.textShop);
 
                 convertView.setTag(holder);
 
@@ -155,6 +160,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             holder.cbChecked.setText(item.getName());
             holder.cbChecked.setTag(item.getId());
             holder.cbChecked.setChecked(item.isChecked());
+
+            BillService byeService = new BillService(context);
+            Bill bill = byeService.allLastByGood(item.getGoodId());
+
+            ShopService shopService = new ShopService(context);
+            Shop shop = shopService.getById(bill.getShopId());
+
+            String shopName = getString(R.string.empty);
+            if(shop!=null){
+                shopName = shop.getName();
+            }
+
+            holder.textPrice.setText(Double.toString(bill.getPrice()));
+            holder.textShop.setText(shopName);
 
             return convertView;
         }

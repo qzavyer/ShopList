@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">ShopList</string>
-    <string name="addText">+</string>
-    <string name="clearText">Clear</string>
-    <string name="listTable">list</string>
+    <string name="add">+</string>
+    <string name="clear">Clear</string>
     <string name="name">Наименование</string>
     <string name="empty" />
     <string name="category">Категория</string>
@@ -13,4 +12,8 @@
     <string name="price">Цена</string>
     <string name="sum">Сумма</string>
     <string name="save">Save</string>
+    <string name="rub">Российский рубль</string>
+    <string name="code">Код</string>
+    <string name="currency">Валюта</string>
+    <string name="date">Дата</string>
 </resources>

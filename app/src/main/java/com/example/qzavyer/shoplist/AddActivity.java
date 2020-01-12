@@ -2,6 +2,7 @@ package com.example.qzavyer.shoplist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -20,18 +21,22 @@ import java.util.ArrayList;
 
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnAdd;
+    boolean isBye;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        Intent intent = getIntent();
+        isBye = intent.getBooleanExtra("isBye", false);
+
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
 
         GoodService service = new GoodService(this);
-        ArrayList<String> goodNames  = service.getGoodNames();
-        ArrayList<String> goodUnits  = service.getUnits();
+        ArrayList<String> goodNames = service.getGoodNames();
+        ArrayList<String> goodUnits = service.getUnits();
 
         CategoryService categoryService = new CategoryService(this);
         ArrayList<String> categoryNames = categoryService.getNames();
@@ -63,7 +68,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
                 editUnit = findViewById(R.id.editUnit);
                 String unit = editUnit.getText().toString();
-                if(unit.length() == 0) unit = "шт.";
+                if (unit.length() == 0) unit = "шт.";
 
                 editCategory = findViewById(R.id.editCategory);
 
@@ -72,9 +77,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
                 double count;
 
-                if(textCount.length() == 0){
+                if (textCount.length() == 0) {
                     count = 1;
-                }else{
+                } else {
                     count = Double.parseDouble(textCount);
                 }
 
@@ -83,11 +88,16 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 item.setUnit(unit);
                 item.setPrice(0);
                 item.setName(text.toString());
+                item.setChecked(isBye);
 
                 Category category = new Category();
                 category.setName(editCategory.getText().toString());
 
-                service.add(item, category);
+                item = service.add(item, category);
+
+                Intent intent = new Intent();
+                intent.putExtra("id", item.getId());
+                setResult(RESULT_OK, intent);
 
                 finish();
                 break;

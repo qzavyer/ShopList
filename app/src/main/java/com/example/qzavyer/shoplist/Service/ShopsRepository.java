@@ -12,11 +12,9 @@ import java.util.ArrayList;
 /**
  * Репозиторий магазина
  */
-class ShopsRepository {
-    private DBHelper dbHelper;
-
-    public ShopsRepository(Context context) {
-        dbHelper = new DBHelper(context);
+class ShopsRepository extends CommonRepository {
+    ShopsRepository(Context context) {
+        super(context);
     }
 
     /**
@@ -24,14 +22,14 @@ class ShopsRepository {
      * @param name Название магазина
      * @return Данные магазина
      */
-    public Shop getShopByName(@org.jetbrains.annotations.NotNull String name) {
+    Shop getShopByName(@org.jetbrains.annotations.NotNull String name) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String[] args = {name};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
-        Cursor c = db.query("shop", null, "name = ?", args, null, null, "name");
+        Cursor c = db.query(dbHelper.ShopsTable, null, "name = ?", args, null, null, "name");
 
         Shop item = null;
 
@@ -59,13 +57,13 @@ class ShopsRepository {
      * Возвращает все магазины
      * @return Список магазинова
      */
-    public ArrayList<Shop> allShops(){
+    ArrayList<Shop> allShops(){
         ArrayList<Shop> items = new ArrayList<>();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "shop";
+        String table = dbHelper.ShopsTable;
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, null, null, null, null, null, "name");
@@ -99,7 +97,7 @@ class ShopsRepository {
      * @param shop Добавляемые данные
      * @return Добавленные данные
      */
-    public Shop add(Shop shop) {
+    Shop add(Shop shop) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -109,10 +107,40 @@ class ShopsRepository {
         cv.put("name", shop.getName());
 
         // вставляем запись и получаем ее ID
-        long rowID = db.insert("shop", null, cv);
+        long rowID = db.insert(dbHelper.ShopsTable, null, cv);
 
         shop.setId((int) rowID);
 
         return shop;
+    }
+
+    Shop getById(int id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String[] args = {Integer.toString(id)};
+
+        // делаем запрос всех данных из таблицы list, получаем Cursor
+        Cursor c = db.query(dbHelper.ShopsTable, null, "id = ?", args, null, null, "name");
+
+        Shop item = null;
+
+        // ставим позицию курсора на первую строку выборки
+        // если в выборке нет строк, вернется false
+        if (c.moveToFirst()) {
+            // определяем номера столбцов по имени в выборке
+            int idColIndex = c.getColumnIndex("id");
+            int nameColIndex = c.getColumnIndex("name");
+
+            item = new Shop();
+            item.setId(c.getInt(idColIndex));
+            item.setName(c.getString(nameColIndex));
+        }
+
+        c.close();
+
+        // закрываем подключение к БД
+        dbHelper.close();
+
+        return item;
     }
 }

@@ -6,16 +6,14 @@ import com.example.qzavyer.shoplist.Models.Good;
 
 import java.util.ArrayList;
 
-public class GoodService {
-    private Context context;
-
+public class GoodService extends CommonService {
     public GoodService(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public ArrayList<String> getGoodNames() {
         GoodsRepository repository = new GoodsRepository(context);
-        ArrayList<Good> goods = repository.allGoods();
+        ArrayList<Good> goods = repository.all();
 
         ArrayList<String> goodNames = new ArrayList<>(goods.size());
 
@@ -28,7 +26,7 @@ public class GoodService {
 
     public ArrayList<String> getUnits() {
         GoodsRepository repository = new GoodsRepository(context);
-        ArrayList<Good> goods = repository.allGoods();
+        ArrayList<Good> goods = repository.all();
 
         ArrayList<String> goodUnits = new ArrayList<>(goods.size());
 

@@ -7,10 +7,12 @@ public class Bill {
      * Идентификатор
      */
     private int id;
+
     /**
      * Идентификатор товара
      */
     private int goodId;
+
     /**
      * Идентификатор магазина
      */
@@ -19,18 +21,26 @@ public class Bill {
      * Дата покупки
      */
     private Date date;
+
     /**
      * Количество
      */
     private double count;
+
     /**
      * Цена
      */
     private double price;
+
     /**
-     * Идентификатор
+     * Сумма
      */
     private double sum;
+
+    /**
+     * Валюта
+     */
+    private String currency;
 
     public int getId() {
         return id;
@@ -86,5 +96,13 @@ public class Bill {
 
     public void setSum(double sum) {
         this.sum = sum;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

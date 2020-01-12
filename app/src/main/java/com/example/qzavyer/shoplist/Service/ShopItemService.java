@@ -11,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class ShopItemService {
-    private Context context;
-
+public class ShopItemService extends CommonService {
     public ShopItemService(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public ShopItem add(@NotNull ShopItem item, Category category) {
@@ -79,7 +77,7 @@ public class ShopItemService {
     public ArrayList<ShopItem> all() {
         ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
 
-        return itemsRepository.allItems();
+        return itemsRepository.all();
     }
 
     public void setChecked(int id, boolean checked) {
@@ -93,12 +91,9 @@ public class ShopItemService {
         return itemsRepository.allChecked();
     }
 
-    private static String capitalizeFirstLetter(@org.jetbrains.annotations.NotNull String customText) {
-        int count = customText.length();
-        if (count == 0) return customText;
+    public ShopItem getById(int id) {
+        ShopItemsRepository itemsRepository = new ShopItemsRepository(context);
 
-        if (count == 1) return customText.toUpperCase();
-
-        return customText.substring(0, 1).toUpperCase() + customText.substring(1).toLowerCase();
+        return itemsRepository.getItemById(id);
     }
 }

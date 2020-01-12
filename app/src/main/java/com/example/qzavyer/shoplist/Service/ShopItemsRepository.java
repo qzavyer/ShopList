@@ -11,20 +11,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-class ShopItemsRepository {
-    private DBHelper dbHelper;
-
-    public ShopItemsRepository(Context context) {
-        dbHelper = new DBHelper(context);
+class ShopItemsRepository extends CommonRepository {
+    ShopItemsRepository(Context context) {
+        super(context);
     }
 
     // Возвращает все записи текущего списка покупок
-    public ArrayList<ShopItem> allItems() {
+    ArrayList<ShopItem> all() {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "list l join goods g on l.goodId=g.id";
-        String[] columns = {"l.id, g.name, l.count, g.price, l.checked, g.unit"};
+        String table = dbHelper.ShopItemTable+" l join "+dbHelper.GoodsTable+" g on l.goodId=g.id";
+        String[] columns = {"l.id, g.name, l.count, g.price, l.checked, g.unit", "l.goodId"};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, columns, null, null, null, null, "name");
@@ -40,12 +38,12 @@ class ShopItemsRepository {
     }
 
     // Возвращает все записи текущего списка покупок
-    public ArrayList<ShopItem> allChecked() {
+    ArrayList<ShopItem> allChecked() {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "list l join goods g on l.goodId=g.id";
-        String[] columns = {"l.id, g.name, l.count, g.price, l.checked, g.unit"};
+        String table = dbHelper.ShopItemTable+" l join "+dbHelper.GoodsTable+" g on l.goodId=g.id";
+        String[] columns = {"l.id, g.name, l.count, g.price, l.checked, g.unit, l.goodId"};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, columns, "l.checked=1", null, null, null, "name");
@@ -61,27 +59,27 @@ class ShopItemsRepository {
     }
 
     // Удаляет все записи текущего списка покупок
-    public void deleteAll() {
+    void deleteAll() {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        db.delete("list", null, null);
+        db.delete(dbHelper.ShopItemTable, null, null);
         // закрываем подключение к БД
         dbHelper.close();
     }
 
     // Удаляет все записи текущего списка покупок
-    public void deleteAllChecked() {
+    void deleteAllChecked() {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        db.delete("list", "checked=1", null);
+        db.delete(dbHelper.ShopItemTable, "checked=1", null);
         // закрываем подключение к БД
         dbHelper.close();
     }
 
     // Добавляет запись в список покупок
-    public ShopItem add(@org.jetbrains.annotations.NotNull ShopItem item) {
+    ShopItem add(@org.jetbrains.annotations.NotNull ShopItem item) {
         ContentValues listCv = new ContentValues();
 
         listCv.put("goodId", item.getGoodId());
@@ -90,14 +88,14 @@ class ShopItemsRepository {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        long id = db.insert("list", null, listCv);
+        long id = db.insert(dbHelper.ShopItemTable, null, listCv);
 
         item.setId((int)id);
 
         return item;
     }
 
-    public void setChecked(int id, boolean checked) {
+    void setChecked(int id, boolean checked) {
         ShopItem item = getItemById(id);
         item.setChecked(checked);
 
@@ -112,16 +110,16 @@ class ShopItemsRepository {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        db.update("list", cv, "id = ?", new String[]{Integer.toString(id)});
+        db.update(dbHelper.ShopItemTable, cv, "id = ?", new String[]{Integer.toString(id)});
     }
 
-    public ShopItem getItemById(int id) {
+    ShopItem getItemById(int id) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String[] args = {Integer.toString(id)};
 
-        String table = "list l join goods g on l.goodId=g.id";
+        String table = dbHelper.ShopItemTable+" l join "+dbHelper.GoodsTable+" g on l.goodId=g.id";
         String[] columns = {"l.id, g.name, l.count, g.price, l.checked, g.unit, l.goodId"};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
@@ -165,7 +163,7 @@ class ShopItemsRepository {
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (cursor.moveToFirst()) {
-            String[] names = new String[]{"id", "name", "price", "count", "unit", "checked"};
+            String[] names = new String[]{"id", "name", "price", "count", "unit", "checked", "goodId"};
 
             // определяем номера столбцов по имени в выборке
             IndexList indexList = new IndexList(cursor, names);
@@ -178,6 +176,7 @@ class ShopItemsRepository {
                 item.setCount(cursor.getInt(indexList.getIndex("count")) / 100d);
                 item.setUnit(cursor.getString(indexList.getIndex("unit")));
                 item.setChecked(cursor.getInt(indexList.getIndex("checked")) == 1);
+                item.setGoodId(cursor.getInt(indexList.getIndex("goodId")));
 
                 items.add(item);
             } while (cursor.moveToNext());

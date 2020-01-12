@@ -6,11 +6,9 @@ import com.example.qzavyer.shoplist.Models.Shop;
 
 import java.util.ArrayList;
 
-public class ShopService {
-    private Context context;
-
+public class ShopService extends CommonService {
     public ShopService(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public ArrayList<String> getShopNames() {
@@ -30,9 +28,14 @@ public class ShopService {
         name = capitalizeFirstLetter(name);
 
         ShopsRepository repository = new ShopsRepository(context);
-        Shop shop = repository.getShopByName(name);
 
-        return shop;
+        return repository.getShopByName(name);
+    }
+
+    public Shop getById(int id) {
+        ShopsRepository repository = new ShopsRepository(context);
+
+        return repository.getById(id);
     }
 
     public Shop add (Shop shop) {
@@ -40,14 +43,5 @@ public class ShopService {
 
         ShopsRepository repository = new ShopsRepository(context);
         return repository.add(shop);
-    }
-
-    private static String capitalizeFirstLetter(@org.jetbrains.annotations.NotNull String customText) {
-        int count = customText.length();
-        if (count == 0) return customText;
-
-        if (count == 1) return customText.toUpperCase();
-
-        return customText.substring(0, 1).toUpperCase() + customText.substring(1).toLowerCase();
     }
 }

@@ -2,16 +2,13 @@ package com.example.qzavyer.shoplist.Service;
 
 import android.content.Context;
 
-import com.example.qzavyer.shoplist.Models.Bill;
 import com.example.qzavyer.shoplist.Models.Category;
 
 import java.util.ArrayList;
 
-public class CategoryService {
-    private Context context;
-
+public class CategoryService extends CommonService {
     public CategoryService(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public ArrayList<String> getNames() {

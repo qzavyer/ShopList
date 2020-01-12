@@ -12,14 +12,9 @@ import java.util.ArrayList;
 /**
  * Репозиторий товаров
  */
-class GoodsRepository {
-    /**
-     * Хэлпер БД
-     */
-    private DBHelper dbHelper;
-
-    public GoodsRepository(Context context) {
-        dbHelper = new DBHelper(context);
+class GoodsRepository extends CommonRepository {
+    GoodsRepository(Context context) {
+        super(context);
     }
 
     /**
@@ -27,14 +22,14 @@ class GoodsRepository {
      * @param name название товара
      * @return Данные товара
      */
-    public Good getGoodByName(@org.jetbrains.annotations.NotNull String name) {
+    Good getGoodByName(@org.jetbrains.annotations.NotNull String name) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String[] args = {name};
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
-        Cursor c = db.query("goods", null, "name = ?", args, null, null, "name");
+        Cursor c = db.query(dbHelper.GoodsTable, null, "name = ?", args, null, null, "name");
 
         Good item = null;
 
@@ -61,13 +56,13 @@ class GoodsRepository {
      * Возвращает все товары
      * @return Список товаров
      */
-    public ArrayList<Good> allGoods() {
+    ArrayList<Good> all() {
         ArrayList<Good> items = new ArrayList<>();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String table = "goods";
+        String table = dbHelper.GoodsTable;
 
         // делаем запрос всех данных из таблицы list, получаем Cursor
         Cursor c = db.query(table, null, null, null, null, null, "name");
@@ -100,7 +95,7 @@ class GoodsRepository {
      * @param good Добавляемые данные
      * @return Добавленные данные
      */
-    public Good add(Good good) {
+    Good add(Good good) {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -113,7 +108,7 @@ class GoodsRepository {
         cv.put("categoryId", good.getCategoryId());
 
         // вставляем запись и получаем ее ID
-        long rowID = db.insert("goods", null, cv);
+        long rowID = db.insert(dbHelper.GoodsTable, null, cv);
 
         good.setId((int) rowID);
 
@@ -137,4 +132,3 @@ class GoodsRepository {
         return item;
     }
 }
-
